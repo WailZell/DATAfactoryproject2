@@ -3,12 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"dependsOn": [],
-				"userProperties": []
-			},
-			{
 				"name": "Lookup1",
 				"type": "Lookup",
 				"dependsOn": [],
@@ -23,6 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT s.name AS schemaName, \n       t.name AS TableName\nFROM sys.tables t\nINNER JOIN sys.schemas s \n    ON t.schema_id = s.schema_id\nWHERE s.name = 'SalesLT'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -30,6 +25,39 @@
 						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
 					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"enableStaging": false
+							}
+						}
+					]
 				}
 			}
 		],
