@@ -17,14 +17,15 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT s.name AS schemaName, \n       t.name AS TableName\nFROM sys.tables t\nINNER JOIN sys.schemas s \n    ON t.schema_id = s.schema_id\nWHERE s.name = 'SalesLT'",
+						"sqlReaderQuery": "SELECT \n    s.name AS SchemaName, \n    t.name AS TableName\nFROM \n    sys.tables AS t\nINNER JOIN \n    sys.schemas AS s \n    ON t.schema_id = s.schema_id\nWHERE \n    s.name = 'SalesLT';",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "SqlServerTable1",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -40,6 +41,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Copy data1",
@@ -57,7 +62,7 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": {
-										"value": "@{concat('select* from',item().schemaName,'.',item().TableName)}",
+										"value": "@{concat('select* from ',item().schemaName,'.',item().TableName)}",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
