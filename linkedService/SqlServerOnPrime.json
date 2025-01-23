@@ -1,0 +1,27 @@
+{
+	"name": "SqlServerOnPrime",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "WWW",
+			"database": "[AdventureWorksLT2022]",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "luke",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVaultaut",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "pasword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "selfhostedintegrationruntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
