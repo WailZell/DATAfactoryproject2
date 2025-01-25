@@ -114,7 +114,7 @@
 				}
 			},
 			{
-				"name": "Notebook1",
+				"name": "bronze to sliver",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -124,7 +124,11 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzureDatabrickslink server",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": []
