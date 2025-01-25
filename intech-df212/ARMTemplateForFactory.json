@@ -371,6 +371,45 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/dally_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "pipeline1",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-01-25T15:50:00",
+						"endTime": "2025-01-26T15:50:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								54
+							],
+							"hours": [
+								16
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pipeline1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/selfhostedintegrationruntime')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
