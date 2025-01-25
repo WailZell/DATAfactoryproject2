@@ -15,6 +15,10 @@
 			"type": "string",
 			"defaultValue": "https://intechig.dfs.core.windows.net/"
 		},
+		"AzureDatabrickslink server_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0124-113710-e0ay2352"
+		},
 		"AzureKeyVaultaut_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://intech-keyvalut.vault.azure.net/"
@@ -154,6 +158,60 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "bronze to sliver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ForEach1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/bensouda8wail@gmail.com/bronze to silver"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabrickslink server",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "silver to gold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "bronze to sliver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/bensouda8wail@gmail.com/Silver to gold"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabrickslink server",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -163,6 +221,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabrickslink server')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet1')]"
 			]
 		},
@@ -240,6 +299,30 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabrickslink server')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-4308801545267263.3.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVaultaut",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databrickskey"
+					},
+					"existingClusterId": "[parameters('AzureDatabrickslink server_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVaultaut')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureKeyVaultaut')]",
